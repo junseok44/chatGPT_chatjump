@@ -30,9 +30,6 @@ async function initialize() {
       }
 
       initialize() {
-        // 초기 URL 체크
-        this.checkUrlAndUpdate();
-
         // URL 변경 감지
         this.urlHandler.initialize();
 
@@ -40,26 +37,18 @@ async function initialize() {
         this.observer.initialize();
       }
 
-      checkUrlAndUpdate() {
-        const url = window.location.href;
-        const chatIdMatch =
-          url.match(/\/c\/([a-f0-9-]+)/) ||
-          url.match(/\/g\/([a-f0-9-]+)\/c\/([a-f0-9-]+)/);
-        const newChatId = chatIdMatch ? chatIdMatch[1] : null;
+      updateDots() {
+        const messages = getMessages();
 
-        console.log("isNewUrl?", newChatId !== this.currentChatId);
-
-        if (newChatId !== this.currentChatId) {
-          this.currentChatId = newChatId;
-          this.updateDots();
+        if (messages) {
+          this.navigation.updateDots(messages);
         }
       }
 
-      updateDots() {
-        const messages = getMessages();
-        if (messages && messages.length > 0) {
-          this.navigation.updateDots(messages);
-        }
+      disconnect() {
+        this.navigation.clearDots();
+        this.observer.disconnect();
+        this.urlHandler.disconnect();
       }
     }
 

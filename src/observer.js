@@ -10,10 +10,14 @@ export class Observer {
     }
 
     this.observer = new MutationObserver(() => {
+      // console.log("mutation observer");
       this.chatJump.updateDots();
     });
 
     const chatContainer = document.querySelector("main");
+
+    // console.log("observer initialized");
+
     if (chatContainer) {
       this.observer.observe(chatContainer, {
         childList: true,
