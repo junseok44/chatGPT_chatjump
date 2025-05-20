@@ -83,8 +83,7 @@ export class Navigation {
 
   createNavigationButton(symbol, onClick) {
     const button = document.createElement("div");
-    button.className = "chat-jump-nav-button";
-    button.textContent = symbol;
+    button.className = `chat-jump-nav-button ${symbol === "↑" ? "up" : "down"}`;
     button.addEventListener("click", onClick);
     return button;
   }

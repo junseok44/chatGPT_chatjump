@@ -34,20 +34,45 @@
 }
 
 .chat-jump-nav-button {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  margin: 5px 0;
-  transition: background-color 0.2s;
+  margin: 4px 0;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .chat-jump-nav-button:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.chat-jump-nav-button.up::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid rgba(153, 153, 153, 0.8);
+  border-left: 2px solid rgba(153, 153, 153, 0.8);
+  transform: rotate(45deg);
+  margin-top: 4px;
+  transition: border-color 0.2s ease;
+}
+
+.chat-jump-nav-button.down::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid rgba(153, 153, 153, 0.8);
+  border-right: 2px solid rgba(153, 153, 153, 0.8);
+  transform: rotate(45deg);
+  margin-bottom: 4px;
+  transition: border-color 0.2s ease;
+}
+
+.chat-jump-nav-button:hover::before {
+  border-color: #ccc;
 }
 
 .chat-jump-dot {
