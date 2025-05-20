@@ -5,6 +5,7 @@ export class Navigation {
   constructor() {
     this.container = null;
     this.dots = [];
+    this.currentPage = 0; // 현재 페이지 번호
     this.init();
   }
 
@@ -34,22 +35,58 @@ export class Navigation {
       return;
     }
 
-    // 컨테이너가 없으면 다시 생성
     if (!this.container || !document.body.contains(this.container)) {
       this.init();
     }
 
     this.clearDots();
 
-    // 최신 메시지부터 표시하고 최대 개수 제한
-    const startIndex = Math.max(0, messages.length - CONFIG.MAX_DOTS);
-    const recentMessages = messages.slice(startIndex);
+    // 전체 페이지 수 계산
+    const totalPages = Math.ceil(messages.length / CONFIG.MAX_DOTS);
 
-    recentMessages.forEach((message, index) => {
+    // 현재 페이지의 메시지 범위 계산
+    const startIndex = Math.max(
+      0,
+      messages.length - (this.currentPage + 1) * CONFIG.MAX_DOTS
+    );
+    const endIndex = Math.max(
+      0,
+      messages.length - this.currentPage * CONFIG.MAX_DOTS
+    );
+    const pageMessages = messages.slice(startIndex, endIndex);
+
+    // 이전 페이지 버튼 추가
+    if (this.currentPage < totalPages - 1) {
+      const prevButton = this.createNavigationButton("↑", () => {
+        this.currentPage++;
+        this.updateDots(messages);
+      });
+      this.container.appendChild(prevButton);
+    }
+
+    // 도트 생성
+    pageMessages.forEach((message, index) => {
       const dot = this.createDot(message, startIndex + index);
       this.container.appendChild(dot);
       this.dots.push(dot);
     });
+
+    // 다음 페이지 버튼 추가
+    if (this.currentPage > 0) {
+      const nextButton = this.createNavigationButton("↓", () => {
+        this.currentPage--;
+        this.updateDots(messages);
+      });
+      this.container.appendChild(nextButton);
+    }
+  }
+
+  createNavigationButton(symbol, onClick) {
+    const button = document.createElement("div");
+    button.className = "chat-jump-nav-button";
+    button.textContent = symbol;
+    button.addEventListener("click", onClick);
+    return button;
   }
 
   createDot(message, index) {
