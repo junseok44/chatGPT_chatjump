@@ -2,6 +2,7 @@ export class Observer {
   constructor(chatJump) {
     this.chatJump = chatJump;
     this.observer = null;
+    this.updateTimeout = null;
   }
 
   initialize() {
@@ -10,13 +11,17 @@ export class Observer {
     }
 
     this.observer = new MutationObserver(() => {
-      // console.log("mutation observer");
-      this.chatJump.updateDots();
+      // 디바운싱 적용
+      if (this.updateTimeout) {
+        clearTimeout(this.updateTimeout);
+      }
+
+      this.updateTimeout = setTimeout(() => {
+        this.chatJump.updateDots();
+      }, 500); // 500ms 딜레이
     });
 
     const chatContainer = document.querySelector("main");
-
-    // console.log("observer initialized");
 
     if (chatContainer) {
       this.observer.observe(chatContainer, {
@@ -30,6 +35,9 @@ export class Observer {
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
+    }
+    if (this.updateTimeout) {
+      clearTimeout(this.updateTimeout);
     }
   }
 }
