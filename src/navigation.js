@@ -29,6 +29,15 @@ export class Navigation {
     }
   }
 
+  destroy() {
+    if (this.container && document.body.contains(this.container)) {
+      document.body.removeChild(this.container);
+    }
+    this.container = null;
+    this.dots = [];
+    this.currentPage = 0;
+  }
+
   updateDots(messages) {
     if (!messages || messages.length === 0) {
       this.clearDots();
@@ -93,10 +102,26 @@ export class Navigation {
     dot.className = "chat-jump-dot";
 
     // 툴팁 텍스트 설정
-    const tooltipText =
-      message.text.slice(0, CONFIG.TOOLTIP_MAX_LENGTH) +
-      (message.text.length > CONFIG.TOOLTIP_MAX_LENGTH ? "..." : "");
-    dot.setAttribute("title", tooltipText);
+    let tooltipText;
+    if (CONFIG.TOOLTIP_FROM_END) {
+      // 끝부분부터 표시
+      const start = Math.max(
+        0,
+        message.text.length - CONFIG.TOOLTIP_MAX_LENGTH
+      );
+      tooltipText = (start > 0 ? "..." : "") + message.text.slice(start);
+    } else {
+      // 처음부터 표시
+      tooltipText =
+        message.text.slice(0, CONFIG.TOOLTIP_MAX_LENGTH) +
+        (message.text.length > CONFIG.TOOLTIP_MAX_LENGTH ? "..." : "");
+    }
+
+    // 커스텀 툴팁 생성
+    const tooltip = document.createElement("div");
+    tooltip.className = "chat-jump-tooltip";
+    tooltip.textContent = tooltipText;
+    dot.appendChild(tooltip);
 
     dot.addEventListener("click", () => {
       const messageElement = message.element;

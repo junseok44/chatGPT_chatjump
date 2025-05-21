@@ -1,3 +1,13 @@
+/* 기본 툴팁 숨기기 */
+[title] {
+  position: relative;
+}
+
+[title]:hover::before,
+[title]:hover::after {
+  display: none !important;
+}
+
 #chat-jump-nav {
   position: fixed;
   right: 20px;
@@ -96,7 +106,7 @@
   transform: scale(1.2);
 }
 
-.chat-jump-dot:hover::after {
+/* .chat-jump-dot:hover::after {
   content: attr(title);
   position: absolute;
   right: 20px;
@@ -113,23 +123,27 @@
   text-overflow: ellipsis;
   z-index: 10001;
   pointer-events: none;
-}
+} */
 
 .chat-jump-tooltip {
   position: absolute;
-  right: 15px;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
   background-color: #343541;
   color: white;
   padding: 8px 12px;
   border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  max-width: 200px;
+  font-size: 14px;
+  white-space: normal;
+  max-width: 400px;
+  width: max-content;
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
+  z-index: 10001;
 }
 
 .chat-jump-dot:hover .chat-jump-tooltip {
@@ -147,6 +161,7 @@
   border-bottom: 4px solid transparent;
   opacity: 0;
   transition: opacity 0.2s ease;
+  z-index: 10001;
 }
 
 .chat-jump-dot:hover::before {

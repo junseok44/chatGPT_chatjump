@@ -52,14 +52,27 @@ async function initialize() {
       }
     }
 
+    const chatJump = new ChatJump();
+
     // DOM이 로드된 후 초기화
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", () =>
-        new ChatJump().initialize()
+        chatJump.initialize()
       );
     } else {
-      new ChatJump().initialize();
+      chatJump.initialize();
     }
+
+    // 설정 변경 메시지 리스너
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.type === "CONFIG_UPDATED") {
+        // CONFIG 객체 업데이트
+        Object.assign(CONFIG, message.config);
+
+        // 도트 업데이트
+        chatJump.updateDots();
+      }
+    });
   } catch (error) {
     console.error("모듈 로드 중 오류 발생:", error);
   }
