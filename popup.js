@@ -39,4 +39,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 팝업 닫기
     window.close();
   });
+
+  // 피드백 버튼 이벤트
+  document.getElementById("reportBug").addEventListener("click", () => {
+    chrome.tabs.create({
+      url: "https://github.com/junseok44/chatGPT_chatjump/issues/new?template=bug_report.md&title=[Bug]",
+    });
+  });
+
+  document.getElementById("requestFeature").addEventListener("click", () => {
+    chrome.tabs.create({
+      url: "https://github.com/junseok44/chatGPT_chatjump/issues/new?template=feature_request.md&title=[Feature]",
+    });
+  });
 });

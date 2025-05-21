@@ -103,6 +103,48 @@
       .save-button:hover {
         background-color: #0d8c6d;
       }
+
+      .feedback-section {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #eee;
+      }
+
+      .feedback-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #1a1a1a;
+      }
+
+      .feedback-buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      .feedback-button {
+        flex: 1;
+        padding: 6px;
+        background-color: #f5f5f5;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s;
+      }
+
+      .feedback-button:hover {
+        background-color: #e5e5e5;
+      }
+
+      .feedback-button.bug {
+        color: #dc2626;
+      }
+
+      .feedback-button.feature {
+        color: #2563eb;
+      }
     </style>
   </head>
   <body>
@@ -146,6 +188,16 @@
     </div>
 
     <button class="save-button" id="saveButton">Save Settings</button>
+
+    <div class="feedback-section">
+      <div class="feedback-title">Give me a feedback</div>
+      <div class="feedback-buttons">
+        <button class="feedback-button bug" id="reportBug">Report Bug</button>
+        <button class="feedback-button feature" id="requestFeature">
+          Request Feature
+        </button>
+      </div>
+    </div>
 
     <script src="popup.js"></script>
   </body>
