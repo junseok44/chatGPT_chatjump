@@ -13,11 +13,7 @@ export class UrlHandler {
       if (currentUrl !== this.lastUrl) {
         this.lastUrl = currentUrl;
 
-        if (CONFIG.CHAT_PAGE_REGEX.test(currentUrl)) {
-          this.chatJump.observer.initialize();
-        } else {
-          this.chatJump.disconnect();
-        }
+        this.chatJump.observer.initialize();
       }
     });
 
