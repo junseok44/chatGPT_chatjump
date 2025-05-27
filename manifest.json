@@ -3,7 +3,7 @@
   "name": "ChatGPT Chat Jump",
   "version": "1.0",
   "description": "Navigate through your ChatGPT conversation history with ease",
-  "permissions": ["activeTab", "scripting", "storage"],
+  "permissions": ["activeTab", "storage"],
   "host_permissions": ["https://chatgpt.com/*"],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
