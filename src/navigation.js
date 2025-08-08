@@ -6,6 +6,7 @@ export class Navigation {
     this.container = null;
     this.dots = [];
     this.currentPage = 0; // 현재 페이지 번호
+    this.dotStates = new Map(); // 도트별 상태 저장 (key: messageIndex, value: showingAnswer)
     this.init();
   }
 
@@ -26,6 +27,7 @@ export class Navigation {
     if (this.container) {
       this.container.innerHTML = "";
       this.dots = [];
+      // 상태는 유지 (페이지 전환 시에도 상태 보존)
     }
   }
 
@@ -36,6 +38,7 @@ export class Navigation {
     this.container = null;
     this.dots = [];
     this.currentPage = 0;
+    this.dotStates.clear(); // 전체 정리 시에만 상태 초기화
   }
 
   updateDots(messages) {
@@ -101,6 +104,36 @@ export class Navigation {
     const dot = document.createElement("div");
     dot.className = "chat-jump-dot";
 
+    // 현재 사용자 메시지 다음의 어시스턴트 답변 article 찾기
+    const findAssistantAfterUser = (userMessageElement) => {
+      if (!userMessageElement) return null;
+      let userArticle = userMessageElement;
+      while (userArticle && userArticle.tagName !== "ARTICLE") {
+        userArticle = userArticle.parentElement;
+      }
+      if (!userArticle) return null;
+
+      let el = userArticle.nextElementSibling;
+      while (el) {
+        if (
+          el.tagName === "ARTICLE" &&
+          el.querySelector('[data-message-author-role="assistant"]')
+        ) {
+          return el;
+        }
+        el = el.nextElementSibling;
+      }
+      return null;
+    };
+
+    const assistantResponse = findAssistantAfterUser(message.element);
+
+    // 도트별 상태를 클래스 레벨에서 관리
+    const dotKey = `dot-${index}`;
+    if (!this.dotStates.has(dotKey)) {
+      this.dotStates.set(dotKey, false); // 초기값: false (질문 상태)
+    }
+
     // 툴팁 텍스트 설정
     let tooltipText;
     if (CONFIG.TOOLTIP_FROM_END) {
@@ -125,17 +158,48 @@ export class Navigation {
 
     dot.addEventListener("click", () => {
       const messageElement = message.element;
-      if (messageElement) {
-        // 메시지 요소로 스크롤
-        messageElement.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+      if (!messageElement) return;
 
-        // 활성화된 도트 표시
-        this.dots.forEach((d) => d.classList.remove("active"));
-        dot.classList.add("active");
+      // 현재 상태 가져오기
+      const currentState = this.dotStates.get(dotKey);
+
+      console.log(
+        `클릭 전 상태: showingAnswer=${currentState}, assistantResponse=${!!assistantResponse}`
+      );
+
+      // 상태 해석: false=다음에 질문으로, true=다음에 답변으로
+      let targetElement;
+      if (currentState) {
+        // 다음이 답변 → 답변으로 이동하고 다음은 질문으로 설정
+        if (assistantResponse) {
+          console.log("답변으로 이동");
+          targetElement = assistantResponse;
+          this.dotStates.set(dotKey, false); // 다음은 질문으로
+        } else {
+          console.log("답변 없음 → 질문으로 이동");
+          targetElement = messageElement;
+          this.dotStates.set(dotKey, false);
+        }
+      } else {
+        // 다음이 질문 → 질문으로 이동하고 다음은 답변으로 설정
+        console.log("질문으로 이동");
+        targetElement = messageElement;
+        if (assistantResponse) {
+          this.dotStates.set(dotKey, true); // 다음은 답변으로
+        }
       }
+
+      console.log(`스크롤 대상:`, targetElement);
+      console.log(`클릭 후 상태: showingAnswer=${this.dotStates.get(dotKey)}`);
+
+      targetElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      // 활성화된 도트 표시
+      this.dots.forEach((d) => d.classList.remove("active"));
+      dot.classList.add("active");
     });
 
     return dot;
